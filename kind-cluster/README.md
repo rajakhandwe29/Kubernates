@@ -100,6 +100,61 @@ http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kube
 ```
 Use the token from the previous step to log in.
 
+🌐 5. Access Kubernetes Dashboard
+
+Option 1: Local Access (HTTP - Proxy)
+```bash
+kubectl proxy
+```
+
+Open in browser:
+
+```bash
+http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+```
+
+Login works only via localhost.
+
+Option 2: HTTPS Access (Port Forward)
+
+```bash
+kubectl port-forward -n kubernetes-dashboard svc/kubernetes-dashboard 8443:443
+```
+Open:
+```bash
+https://127.0.0.1:8443
+```
+
+ Accept browser warning (self-signed certificate)
+
+Option 3: Remote Access (External Machine)
+
+Run on server:
+
+```bash
+kubectl port-forward -n kubernetes-dashboard svc/kubernetes-dashboard 8443:443 --address=0.0.0.0
+```
+Open firewall :
+
+```bash
+sudo firewall-cmd --add-port=8443/tcp --permanent
+sudo firewall-cmd --reload
+```
+Access from browser:
+```bash
+https://<SERVER-IP>:8443
+```
+
+Recommended: Secure Access via SSH Tunnel
+
+From your local machine:
+```bash
+ssh -L 8443:localhost:8443 user@<SERVER-IP>
+```
+Then open:
+```bash
+https://127.0.0.1:8443
+```
 ## 5. Deleting the Cluster
 Delete the KIND cluster:
 ```bash
